@@ -687,7 +687,7 @@ EOF;
                     if (!empty($_FILES['IDPicUrl']) && $_FILES['IDPicUrl']['tmp_name'] != "") {
 
                         if (preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['IDPicUrl']['name']) == "jpg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['IDPicUrl']['name']) == "jpeg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['IDPicUrl']['name']) == "png") {
-                                $IDPicUrl = CommonElement::CopyImg($Rowm['MemberId'], $_FILES['IDPicUrl'], "../../快易購FrontSide(前台20211025)/IDimage/");
+                                $IDPicUrl = CommonElement::CopyImg($Rowm['MemberId'], $_FILES['IDPicUrl'], "../../happygoFrontSide/IDimage/");
                                 // echo $IDPicUrl;exit;
                                 $field = array("IDPicUrl","IDVerify");
                                 $value = array($IDPicUrl,2);
