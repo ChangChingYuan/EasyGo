@@ -1074,8 +1074,8 @@ $(function() {
             }
             if(isJSON(data) == true){
                 var obj = JSON.parse(data);
-                // console.log(obj[8]);
-                $('img[name="FileName"]').attr("src","../快易購FrontSide(前台20211025)/picturedata/"+obj[0]);
+                console.log(obj[17]);
+                $('img[name="FileName"]').attr("src","../happygoFrontSide/picturedata/"+obj[0]);
                 $('span[name="GameName"]').html(obj[1]);
                 $('span[name="TypeName"]').html(obj[2]);
                 $('span[name="ProductTitle"]').html(obj[3]);
@@ -1094,6 +1094,7 @@ $(function() {
                 $('div[name="ATMVirtualAccount"]').html(obj[14]);
                 $('div[name="ShopPaymentCode"]').html(obj[15]);
                 $('div[name="ShopPaymentEndDate"]').html(obj[16]);
+                $('span[name="OrderNumber"]').html(obj[17]);
             }else{
                 eval(data);
             }
@@ -1102,6 +1103,7 @@ $(function() {
     
     if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Shopping_cart" && document.referrer.substring(document.referrer.lastIndexOf('/') + 1) == "Order_buy") {
         // console.log(sessionStorage.getItem('session_OrderNumber'));
+        console.log(sessionStorage.getItem('session_OrderNumber'));
         // $.post("Order/SellList",
         $.post("Order/Shopping_cart",{fun: "Shopping_cart", OrderNumber:sessionStorage.getItem('session_OrderNumber')}, data =>{
             function isJSON(data) {
@@ -1119,8 +1121,8 @@ $(function() {
             }
             if(isJSON(data) == true){
                 var obj = JSON.parse(data);
-                // console.log(obj[1]);
-                $('img[name="FileName"]').attr("src","../快易購FrontSide(前台20211025)/picturedata/"+obj[0]);
+                // console.log(obj[17]);
+                $('img[name="FileName"]').attr("src","../happygoFrontSide/picturedata/"+obj[0]);
                 $('span[name="GameName"]').html(obj[1]);
                 $('span[name="TypeName"]').html(obj[2]);
                 $('span[name="ProductTitle"]').html(obj[3]);
@@ -1139,6 +1141,7 @@ $(function() {
                 $('div[name="ATMVirtualAccount"]').html(obj[14]);
                 $('div[name="ShopPaymentCode"]').html(obj[15]);
                 $('div[name="ShopPaymentEndDate"]').html(obj[16]);
+                $('span[name="OrderNumber"]').html(obj[17]);
             }else{
                 eval(data);
             }
@@ -1152,7 +1155,7 @@ $(function() {
         $.post("Order/Shopping_cart", {
             fun:"ATMConfirmBuy",
             ProductTitle:$('span[id="ProductTitle"]').text(),
-            OrderNumber:sessionStorage.getItem('session_OrderNumber'),
+            OrderNumber:$('span[name="OrderNumber"]').text(),
             ProductNumber:$('span[id="ProductNumber"]').text(),
             // PaymentMethod:sessionStorage.getItem('session_PaymentMethod'),
             SumPricePlusHand:$('span[id="ShopSumPricePlusHand"]').text(),
@@ -1184,11 +1187,11 @@ $(function() {
     
     $('input[id="CvsPay"]').on('click', function (Event) {
         var PaymentType = 3; // 付款方式
-        
+        // console.log($('span[name="OrderNumber"]').text());
         $.post("Order/Shopping_cart", {
             fun:"ShopConfirmBuy",
             ProductTitle:$('span[id="ProductTitle"]').text(),
-            OrderNumber:sessionStorage.getItem('session_OrderNumber'),
+            OrderNumber:$('span[name="OrderNumber"]').text(),
             ProductNumber:$('span[id="ProductNumber"]').text(),
             // PaymentMethod:sessionStorage.getItem('session_PaymentMethod'),
             SumPricePlusHand:$('span[id="ShopSumPricePlusHand"]').text(),
@@ -1474,7 +1477,7 @@ $(function() {
                     $('input[id="AppealTitle"]').val(obj[3]);
                     $('textarea[id="AppealContent"]').html(obj[4]);
                     $('a[id="Appealfile"]').html(obj[5]);
-                    $('img[id="AppealfileImg"]').attr("src","../快易購FrontSide(前台20211025)/appealImg/"+obj[5]);
+                    $('img[id="AppealfileImg"]').attr("src","../happygoFrontSide/appealImg/"+obj[5]);
                     // $('div[id="AppealfileImg"]').html(obj[5]);
                 });
             });

@@ -24,7 +24,7 @@
         case "Center" ;
             // if (Checklogin(true) == 1) Center();
             if(Checklogin(true) == 1){ Center();}else{
-                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+                header("location:http://94.176.236.26/happygoFrontSide/Index/index");
             }
             break;
         case "Checklogin" ;
@@ -32,37 +32,37 @@
             break;
         case "Order_list":
             if (Checklogin(true) == 1){ Order_list();}else{
-                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+                header("location:http://94.176.236.26/happygoFrontSide/Index/index");
             }
             break;
         case "Order_buy":
             if (Checklogin(true) == 1){ Order_buy();}else{
-                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+                header("location:http://94.176.236.26/happygoFrontSide/Index/index");
             }
             break;
         case "Order_sell":
             if (Checklogin(true) == 1){ Order_sell();}else{
-                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+                header("location:http://94.176.236.26/happygoFrontSide/Index/index");
             }
             break;
         case "Members_edit":
             if (Checklogin(true) == 1){ members_edit();}else{
-                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+                header("location:http://94.176.236.26/happygoFrontSide/Index/index");
             }
             break;
         case "Password_edit":
             if (Checklogin(true) == 1){ Password_edit();}else{
-                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+                header("location:http://94.176.236.26/happygoFrontSide/Index/index");
             }
             break;
         case "Paynumber_edit":
             if (Checklogin(true) == 1){ Paynumber_edit();}else{
-                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+                header("location:http://94.176.236.26/happygoFrontSide/Index/index");
             }
             break;
         case "Wallet":
             if (Checklogin(true) == 1){ Wallet();}else{
-                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+                header("location:http://94.176.236.26/happygoFrontSide/Index/index");
             }
             break;
         case "WithdrawApply":
@@ -493,7 +493,9 @@ EOF;
                 ob.SumPricePlusHand,
                 ob.Quantity,
                 case when ob.State = 1 then '待付款' when ob.State = 2 then '待收貨' when ob.State = 3 then '已完成' when ob.State = 4 then '已取消' end as `State`,
-                EvaluState
+                EvaluState,
+                ob.PaymentType,
+                ob.PaymentCode
                 FROM `ordertobuy` ob
                 LEFT JOIN member m ON m.MemberId = ob.MemberId
                 LEFT JOIN `order` o ON o.ProductNumber = ob.ProductNumber
@@ -505,7 +507,7 @@ EOF;
                         switch ($Row['State']) {
                             case "待付款":
                                 $text_color = "text_red";
-                                $display = '';
+                                $display = $Row['PaymentCode'] == "" ? '' : 'style="display: none;"' ;
                                 $Deldisplay = '';
                                 $Evaludisplay = 'style="display: none;"';
                             break;

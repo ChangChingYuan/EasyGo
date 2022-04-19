@@ -628,6 +628,7 @@ EOF;
                         if (CDbShell::num_rows() > 0) {
                             goto Again;
                         }
+                        // CSession::setVar("session_OrderNumber", $OrderNumber);
                         // $OrderNumber = str_pad(rand(100000000000000, 999999999999999), 15, '0', STR_PAD_LEFT);
                         $field = array("MemberId","ProductNumber","OrderNumber","GameId","GameServer","Quantity","SumPrice","SellMemberId","PaymentMethod","PaymentType","State","CreateDate");
                         $value = array($MemberId,$_POST["ProductNumber"],$OrderNumber,$Rowg["GameId"],$_POST["GameServer"],$_POST["Quantity"],$_POST["SumPrice"],$Rowm["MemberId"],$PaymentMethod,$PaymentType,"1",date('Y/m/d H:i:s'));
@@ -816,6 +817,8 @@ EOF;
                 if (CDbShell::num_rows() == 1) {
                     if('Shopping_cart' == $_POST['fun']){
                         $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : $_POST["OrderNumber"];
+                        // $ProductNumber = $_POST["ProductNumber"];
+                        // $OrderNumber = $_POST["OrderNumber"];
                         CDbShell::query("SELECT ob.`Row`,
                         o.ProductTitle,
                         pt.TypeName,
@@ -901,6 +904,7 @@ EOF;
                             $data[14] = str_pad(rand(1000000000000, 9999999999999), 13, '0', STR_PAD_LEFT); // 虛擬帳號暫時
                             $data[15] = $randoma;
                             $data[16] = date("Y-m-d H:i:s", strtotime("+2 day", strtotime(date("Y-m-d H:i:s"))));
+                            $data[17] = $Row["OrderNumber"];
                             echo json_encode($data);
                             exit;
                         }else{
@@ -910,8 +914,9 @@ EOF;
 
                     if('ATMConfirmBuy' == $_POST['fun']){
                         $ProductTitle    =$_POST["ProductTitle"];
-                        $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : ($_POST["OrderNumber"] == "null" ? $_POST["ProductNumber"] : $_POST["OrderNumber"]);
-                        // $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : $_POST["OrderNumber"];
+                        // $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : ($_POST["OrderNumber"] == "null" ? $_POST["ProductNumber"] : $_POST["OrderNumber"]);
+                        $OrderNumber     =$_POST["OrderNumber"];
+                        $ProductNumber   =$_POST["ProductNumber"];
                         $PaymentMethod   =$_POST["PaymentMethod"];
                         $SumPricePlusHand=$_POST["SumPricePlusHand"];
                         $PaymentType     =$_POST["PaymentType"];
@@ -947,7 +952,7 @@ EOF;
                             "HashKey"				=> "JNYYYWP8WXS95HP85F9HU9BJ5",
                             "HashIV"				=> "3NWU7VKNRTHNG8FJ6ERRVYWF8X",
                             "MerTradeID"			=> $CashFlowID,
-                            "MerProductID"			=> $ProductNumber,
+                            "MerProductID"			=> $OrderNumber,
                             "MerUserID"				=> $MRow["SpreadCode"],
                             "Amount"				=> intval($SumPricePlusHand),
                             "TradeDesc"				=> "Pay".$SumPricePlusHand."元",
@@ -962,7 +967,9 @@ EOF;
                     }
                     if('ShopConfirmBuy' == $_POST['fun']){
                         $ProductTitle    =$_POST["ProductTitle"];
-                        $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : ($_POST["OrderNumber"] == "null" ? $_POST["ProductNumber"] : $_POST["OrderNumber"]);
+                        // $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : ($_POST["OrderNumber"] == "null" ? $_POST["ProductNumber"] : $_POST["OrderNumber"]);
+                        $OrderNumber     =$_POST["OrderNumber"];
+                        $ProductNumber   =$_POST["ProductNumber"];
                         // $PaymentMethod   =$_POST["PaymentMethod"];
                         $SumPricePlusHand=$_POST["SumPricePlusHand"];
                         // $PaymentCode     =$_POST["PaymentCode"];
@@ -1006,7 +1013,7 @@ EOF;
                             "HashKey"				=> "JNYYYWP8WXS95HP85F9HU9BJ5",
                             "HashIV"				=> "3NWU7VKNRTHNG8FJ6ERRVYWF8X",
                             "MerTradeID"			=> $CashFlowID,
-                            "MerProductID"			=> $ProductNumber,
+                            "MerProductID"			=> $OrderNumber,
                             "MerUserID"				=> $MRow["SpreadCode"],
                             "Amount"				=> intval($SumPricePlusHand),
                             "TradeDesc"				=> "Pay".$SumPricePlusHand."元",
@@ -1912,7 +1919,7 @@ EOF;
         $_IPV4 = Operate::get_client_ip(1, true);
         $_IP = Operate::get_client_ip(0, true);
 
-        $fp = fopen('../operate/Log/DealNotify_LOG_'.date("YmdHis").'.txt', 'a');
+        $fp = fopen('../operate/Log/DealNotify_LOG123_'.date("YmdHis").'.txt', 'a');
         fwrite($fp, " ---------------- 開始 ---------------- ".PHP_EOL);
         fwrite($fp, " IPV4  >> ". $_IPV4 .PHP_EOL);
         fwrite($fp, " IP    >> ". $_IP .PHP_EOL);
@@ -1931,6 +1938,7 @@ EOF;
         $fp = fopen('../operate/Log/Notify_LOG_'.date("YmdHis").'.txt', 'a');
         fwrite($fp, " ---------------- 開始 ---------------- ".PHP_EOL);
         fwrite($fp, " Validate  >> ". $Validate .PHP_EOL);
+        fwrite($fp, " RtnCode  >> ". $_POST["RtnCode"] .PHP_EOL);
         
         fclose($fp);
         if (0 == strcmp($_POST['Validate'], $Validate)) {
@@ -2012,9 +2020,25 @@ EOF;
                     fclose($fp);
                 }
             }else if($_POST['RtnCode'] == 5){
-                $PaymentCode = isset($_POST['CodeNo']) ? $_POST['CodeNo'] : ($_POST['VatmBankCode']."-".$_POST['VatmAccount']);
+
+                $PaymentCode = $_POST['CodeNo'] != "" ? $_POST['CodeNo'] : ($_POST['VatmBankCode']."-".$_POST['VatmAccount']);
+
+                $fp = fopen('../operate/Log/RtnCode5_LOG_'.date("YmdHis").'.txt', 'a');
+                fwrite($fp, " ---------------- 開始 ---------------- ".PHP_EOL);
+                fwrite($fp, " MerProductID >> ". $_POST['MerProductID'] .PHP_EOL);
+                fwrite($fp, " ExpireTime  >> ". $_POST['ExpireTime'] .PHP_EOL);
+                fwrite($fp, " RtnMessage  >> ". $_POST['RtnMessage'] .PHP_EOL);
+                fwrite($fp, " PaymentCode  >> ". $PaymentCode .PHP_EOL);
+                fwrite($fp, " SQL  >> ". ("UPDATE ordertobuy SET PaymentCode = '".$PaymentCode."', ExpireTime = '".$_POST['ExpireTime']."', RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'") .PHP_EOL);
+
+                // $PaymentCode = $_POST['CodeNo'] != "" ? $_POST['CodeNo'] : ($_POST['VatmBankCode']."-".$_POST['VatmAccount']);
                 CDbShell::query("UPDATE ordertobuy SET PaymentCode = '".$PaymentCode."', ExpireTime = '".$_POST['ExpireTime']."', RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'");
             }else{
+
+                $fp = fopen('../operate/Log/RtnCodelse_LOG_'.date("YmdHis").'.txt', 'a');
+                fwrite($fp, " ---------------- 開始 ---------------- ".PHP_EOL);
+                fwrite($fp, " RtnCode  >> ". $_POST['RtnCode'] .PHP_EOL);
+
                 CDbShell::query("UPDATE ordertobuy SET RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'");
                     
                 echo "success";
