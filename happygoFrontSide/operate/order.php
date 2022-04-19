@@ -15,8 +15,11 @@
 
 
     switch ($_SERVER["func"]) {
-        case "AddOrder":
+        case "AddOrder": //Publish
             AddOrder();
+            break;
+        case "Publish_edit":
+            Publish_edit();
             break;
         case "SellList":
             SellList();
@@ -197,6 +200,121 @@ EOF;
             } 
         }
         include("../publish.html");
+    }
+
+    function Publish_edit() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                CDbShell::Add_S($_POST);
+                CDbShell::Add_S($_GET);
+                CDbShell::Add_S($_SESSION);
+                CDbShell::Add_S($_COOKIE);
+                CDbShell::Connect();
+                CDbShell::query("SELECT * FROM member WHERE MemberAccount='".CSession::GetVar("Account")."'  AND MemberPassword = '".CSession::GetVar("Password")."'" );
+                $Row = CDbShell::fetch_array();
+                if($_POST["fun"] == "PublishList"){
+                    CDbShell::query("SELECT
+                    o.MemberId,
+                    o.ProductNumber,
+                    o.ProductId,
+                    o.ProductTitle,
+                    case when o.GamePlatform = 1 then 'Android' when o.GamePlatform = 2 then 'iOS' when o.GamePlatform = 3 then '電腦' when o.GamePlatform = 4 then 'Steam' end as GamePlatform,
+                    o.TypeId,
+                    pt.TypeName,
+                    g.GameName,
+                    o.GameServer,
+                    o.PointCardKind,
+                    o.ShelfState,
+                    o.Price,
+                    o.OrderQuantity,
+                    o.GameCoinQuantity,
+                    o.CurrencyValue,
+                    o.Currency,
+                    o.KuTsuenQuantity,
+                    o.ProductInfo,
+                    o.GameAccount,
+                    o.CharacterName,
+                    o.CharacterLevel,
+                    o.CharacterProfession,
+                    o.CharacterSex,
+                    o.ChangePassword,
+                    o.FileInfo1,
+                    o.FileInfo2,
+                    o.ChiuHsiaoQuantity,
+                    o.HsiaoShouQuantity,
+                    o.HandlingFee,
+                    o.OrderState,
+                    o.CreateDate,
+                    o.ModifyDate,
+                    o.Scan
+                    FROM `order` o
+                    LEFT JOIN member m ON m.MemberId = o.MemberId
+                    LEFT JOIN producttype pt on pt.TypeId = o.TypeId
+                    LEFT JOIN game g ON g.GameId = o.GameId 
+                    WHERE o.MemberId = '".$Row["MemberId"]."'" );
+                    $Rowo = CDbShell::fetch_array();
+                    if (CDbShell::num_rows() > 0) {
+                        $data= array($Rowo["MemberId"],$Rowo["ProductNumber"],$Rowo["ProductId"],$Rowo["ProductTitle"],$Rowo["GamePlatform"],$Rowo["TypeId"],$Rowo["TypeName"],
+                        $Rowo["GameName"],$Rowo["GameServer"],$Rowo["PointCardKind"],$Rowo["ShelfState"],$Rowo["Price"],$Rowo["OrderQuantity"],$Rowo["GameCoinQuantity"]
+                        ,$Rowo["CurrencyValue"],$Rowo["Currency"],$Rowo["KuTsuenQuantity"],$Rowo["ProductInfo"],$Rowo["GameAccount"],$Rowo["CharacterName"]
+                        ,$Rowo["CharacterLevel"],$Rowo["CharacterProfession"],$Rowo["CharacterSex"],$Rowo["ChangePassword"],$Rowo["FileInfo1"],$Rowo["FileInfo2"]
+                        ,$Rowo["ChiuHsiaoQuantity"],$Rowo["HsiaoShouQuantity"],$Rowo["HandlingFee"],$Rowo["OrderState"],$Rowo["CreateDate"],$Rowo["ModifyDate"],$Rowo["Scan"]);
+                        echo json_encode($data);
+                        exit;
+                    }
+                }
+
+                if($_POST["fun"] == "PublishEdit"){
+                    $MemberId=$Row["MemberId"];
+                    $field = array("MemberId","ProductNumber","ProductId","TypeId","GamePlatform","GameId","GameServer","ProductTitle","PointCardKind","ShelfState","Price","OrderQuantity","GameCoinQuantity","CurrencyValue","Currency","KuTsuenQuantity","ProductInfo","GameAccount","CharacterName","CharacterLevel","CharacterProfession","CharacterSex","ChangePassword","FileInfo1","FileInfo2","ChiuHsiaoQuantity","HsiaoShouQuantity","HandlingFee","OrderState","CreateDate","ModifyDate","Scan");
+                    $value = array($Row["MemberId"],$_POST["ProductNumber"],$_POST["ProductId"],$_POST["TypeId"],$_POST["GamePlatform"],$_POST["GameName"],$_POST["GameServer"],$_POST["ProductTitle"],$_POST["PointCardKind"],"1",$_POST["Price"],$OrderQuantity,$GameCoinQuantity,$_POST["CurrencyValue"],$_POST["Currency"],$KuTsuenQuantity,$_POST["ProductInfo"],$_POST["GameAccount"],$_POST["CharacterName"],$_POST["CharacterLevel"],$_POST["CharacterProfession"],$_POST["CharacterSex"],$_POST["ChangePassword"],$_POST["FileInfo1"],$_POST["FileInfo2"],$ChiuHsiaoQuantity,$HsiaoShouQuantity,$HandlingFee,'0',date('Y/m/d H:i:s'),date('Y/m/d H:i:s'),0);
+                    CDbShell::insert("`order`", $field, $value);
+                    $Id = CDbShell::insert_id();
+
+                    if (!empty($_FILES['FileName']) && $_FILES['FileName']['tmp_name'] != "") {
+
+                        if (preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileName']['name']) == "jpg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileName']['name']) == "jpeg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileName']['name']) == "png") {
+                                $FileName = CommonElement::CopyImg($Id, $_FILES['FileName'], "../picturedata/");
+                                // echo $Id;exit;
+                                $field = array("FileName");
+                                $value = array($FileName);
+                                CDbShell::update("`order`", $field, $value, "`Row` = ".$Id); 
+                        }else {
+                            throw new exception("照片不符合!");
+                        }
+                    }
+                    if (!empty($_FILES['FileInfo1']) && $_FILES['FileInfo1']['tmp_name'] != "") {
+
+                        if (preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileInfo1']['name']) == "jpg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileInfo1']['name']) == "jpeg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileInfo1']['name']) == "png") {
+                                $FileInfo1 = CommonElement::CopyImg($Id, $_FILES['FileInfo1'], "../Infoimg1/");
+                                // echo $Id;exit;
+                                $field = array("FileInfo1");
+                                $value = array($FileInfo1);
+                                CDbShell::update("`order`", $field, $value, "`Row` = ".$Id); 
+                        }else {
+                            throw new exception("照片不符合!");
+                        }
+                    }
+                    if (!empty($_FILES['FileInfo2']) && $_FILES['FileInfo2']['tmp_name'] != "") {
+
+                        if (preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileInfo2']['name']) == "jpg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileInfo2']['name']) == "jpeg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['FileInfo2']['name']) == "png") {
+                                $FileInfo2 = CommonElement::CopyImg($Id, $_FILES['FileInfo2'], "../Infoimg2/");
+                                // echo $Id;exit;
+                                $field = array("FileInfo2");
+                                $value = array($FileInfo2);
+                                CDbShell::update("`order`", $field, $value, "`Row` = ".$Id); 
+                        }else {
+                            throw new exception("照片不符合!");
+                        }
+                    }
+
+                    echo "window.location.href='Member/Center'";exit;
+                }
+            }catch(Exception $e) {
+                JSModule::ErrorJSMessage($e->getMessage());
+            } 
+        }
+        include("../publish_edit.html");
     }
 
     function SellList() {
@@ -792,8 +910,8 @@ EOF;
 
                     if('ATMConfirmBuy' == $_POST['fun']){
                         $ProductTitle    =$_POST["ProductTitle"];
-                        $OrderNumber     =$_POST["OrderNumber"];
-                        $ProductNumber   =$_POST["ProductNumber"];
+                        $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : ($_POST["OrderNumber"] == "null" ? $_POST["ProductNumber"] : $_POST["OrderNumber"]);
+                        // $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : $_POST["OrderNumber"];
                         $PaymentMethod   =$_POST["PaymentMethod"];
                         $SumPricePlusHand=$_POST["SumPricePlusHand"];
                         $PaymentType     =$_POST["PaymentType"];
@@ -829,7 +947,7 @@ EOF;
                             "HashKey"				=> "JNYYYWP8WXS95HP85F9HU9BJ5",
                             "HashIV"				=> "3NWU7VKNRTHNG8FJ6ERRVYWF8X",
                             "MerTradeID"			=> $CashFlowID,
-                            "MerProductID"			=> $OrderNumber,
+                            "MerProductID"			=> $ProductNumber,
                             "MerUserID"				=> $MRow["SpreadCode"],
                             "Amount"				=> intval($SumPricePlusHand),
                             "TradeDesc"				=> "Pay".$SumPricePlusHand."元",
@@ -844,8 +962,7 @@ EOF;
                     }
                     if('ShopConfirmBuy' == $_POST['fun']){
                         $ProductTitle    =$_POST["ProductTitle"];
-                        $OrderNumber     =$_POST["OrderNumber"];
-                        $ProductNumber   =$_POST["ProductNumber"];
+                        $ProductNumber = isset($_POST["ProductNumber"]) ? $_POST["ProductNumber"] : ($_POST["OrderNumber"] == "null" ? $_POST["ProductNumber"] : $_POST["OrderNumber"]);
                         // $PaymentMethod   =$_POST["PaymentMethod"];
                         $SumPricePlusHand=$_POST["SumPricePlusHand"];
                         // $PaymentCode     =$_POST["PaymentCode"];
@@ -889,7 +1006,7 @@ EOF;
                             "HashKey"				=> "JNYYYWP8WXS95HP85F9HU9BJ5",
                             "HashIV"				=> "3NWU7VKNRTHNG8FJ6ERRVYWF8X",
                             "MerTradeID"			=> $CashFlowID,
-                            "MerProductID"			=> $OrderNumber,
+                            "MerProductID"			=> $ProductNumber,
                             "MerUserID"				=> $MRow["SpreadCode"],
                             "Amount"				=> intval($SumPricePlusHand),
                             "TradeDesc"				=> "Pay".$SumPricePlusHand."元",

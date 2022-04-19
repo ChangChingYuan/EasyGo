@@ -77,7 +77,45 @@ $(function() {
         });
     }
 
-    
+    if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Publish_edit") {
+        $.post("Order/Publish_edit", {fun:"PublishList"}, data =>{
+            var obj = JSON.parse(data);
+            console.log(obj[5]);
+            let a = 6;
+            $('input[id="pa_radio'+a+'"]').prop('checked', true);
+        });
+    }
+
+    if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Order_list") {
+        $.post("Member/Order_list", data =>{
+            console.log(data);
+            $('tbody[id="Order_list"]').html(data);
+
+            $("input[id='PublishEdit']").on('click',  function(Event) {
+				let ProductNumber = $(this).data("value");
+                sessionStorage.setItem('session_ProductNumber', ProductNumber);
+	            console.log(ProductNumber);
+				var mapForm = document.createElement("form");
+				mapForm.target = "_blank";    
+				mapForm.method = "POST";
+				mapForm.action = "Order/Publish_edit";
+				// Create an input
+				var mapInput = document.createElement("input");
+				mapInput.type = "hidden";
+				mapInput.name = "ProductNumber";
+				mapInput.value = ProductNumber;
+	
+				// Add the input to the form
+				mapForm.appendChild(mapInput);
+	
+				// Add the form to dom
+				document.body.appendChild(mapForm);
+	
+				// Just submit
+				mapForm.submit();
+			});
+        });
+    }
 
     if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Order_sell") {
         $.post("Member/Order_sell", data =>{
@@ -920,7 +958,7 @@ $(function() {
         });
 
         $.post("Order/GameInfo", {fun:"ProductQAList", ProductNumber:ProductNumber}, data =>{
-            console.log(data);console.log(123);
+            // console.log(data);console.log(123);
             $('div[id="ProductQAList"]').html(data);
 
             $("input[id='AnsConfirm']").on('click',  function(Event) {
@@ -933,7 +971,7 @@ $(function() {
     }
     
     // console.log(location.href.substring(location.href.lastIndexOf('/') + 1));
-    if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Center" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Order_sell" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Order_buy" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Wallet" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Members_edit" || location.href.substring(location.href.lastIndexOf('/') + 1) == "OrderBuyInfo" || location.href.substring(location.href.lastIndexOf('/') + 1) == "CommentSell" || location.href.substring(location.href.lastIndexOf('/') + 1) == "CommentBuy" || location.href.substring(location.href.lastIndexOf('/') + 1) == "QASell" || location.href.substring(location.href.lastIndexOf('/') + 1) == "QABuy" || location.href.substring(location.href.lastIndexOf('/') + 1) == "MailMembers" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Complain"){
+    if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Center" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Order_list" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Order_sell" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Order_buy" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Wallet" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Members_edit" || location.href.substring(location.href.lastIndexOf('/') + 1) == "OrderBuyInfo" || location.href.substring(location.href.lastIndexOf('/') + 1) == "CommentSell" || location.href.substring(location.href.lastIndexOf('/') + 1) == "CommentBuy" || location.href.substring(location.href.lastIndexOf('/') + 1) == "QASell" || location.href.substring(location.href.lastIndexOf('/') + 1) == "QABuy" || location.href.substring(location.href.lastIndexOf('/') + 1) == "MailMembers" || location.href.substring(location.href.lastIndexOf('/') + 1) == "Complain"){
     // if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Center" || "Order_sell" || "Order_buy" || "Wallet" || "Members_edit" || "OrderBuyInfo" || "CommentSell" || "CommentBuy" || "QASell" || "QABuy" || "MailMembers" || "Complain"){
         // console.log(sessionStorage.getItem('session_MemberAccount'));
         $.post("Order/GameInfo", {fun: "MemberOnline", val:sessionStorage.getItem('session_MemberAccount')}, data =>{
@@ -1109,7 +1147,8 @@ $(function() {
 
     $('input[id="AtmPay"]').on('click', function (Event) {
         var PaymentType = 2; // 付款方式
-        
+        // console.log(sessionStorage.getItem('session_OrderNumber'));
+        // alert(sessionStorage.getItem('session_OrderNumber'));
         $.post("Order/Shopping_cart", {
             fun:"ATMConfirmBuy",
             ProductTitle:$('span[id="ProductTitle"]').text(),

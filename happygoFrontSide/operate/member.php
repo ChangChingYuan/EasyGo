@@ -24,40 +24,45 @@
         case "Center" ;
             // if (Checklogin(true) == 1) Center();
             if(Checklogin(true) == 1){ Center();}else{
-                header("location:http://127.0.0.1/%E5%BF%AB%E6%98%93%E8%B3%BCFrontSide(%E5%89%8D%E5%8F%B020211025)/index.php");
+                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
             }
             break;
         case "Checklogin" ;
             Checklogin();
             break;
+        case "Order_list":
+            if (Checklogin(true) == 1){ Order_list();}else{
+                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
+            }
+            break;
         case "Order_buy":
             if (Checklogin(true) == 1){ Order_buy();}else{
-                header("location:http://127.0.0.1/%E5%BF%AB%E6%98%93%E8%B3%BCFrontSide(%E5%89%8D%E5%8F%B020211025)/index.php");
+                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
             }
             break;
         case "Order_sell":
             if (Checklogin(true) == 1){ Order_sell();}else{
-                header("location:http://127.0.0.1/%E5%BF%AB%E6%98%93%E8%B3%BCFrontSide(%E5%89%8D%E5%8F%B020211025)/index.php");
+                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
             }
             break;
         case "Members_edit":
             if (Checklogin(true) == 1){ members_edit();}else{
-                header("location:http://127.0.0.1/%E5%BF%AB%E6%98%93%E8%B3%BCFrontSide(%E5%89%8D%E5%8F%B020211025)/index.php");
+                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
             }
             break;
         case "Password_edit":
             if (Checklogin(true) == 1){ Password_edit();}else{
-                header("location:http://127.0.0.1/%E5%BF%AB%E6%98%93%E8%B3%BCFrontSide(%E5%89%8D%E5%8F%B020211025)/index.php");
+                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
             }
             break;
         case "Paynumber_edit":
             if (Checklogin(true) == 1){ Paynumber_edit();}else{
-                header("location:http://127.0.0.1/%E5%BF%AB%E6%98%93%E8%B3%BCFrontSide(%E5%89%8D%E5%8F%B020211025)/index.php");
+                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
             }
             break;
         case "Wallet":
             if (Checklogin(true) == 1){ Wallet();}else{
-                header("location:http://127.0.0.1/%E5%BF%AB%E6%98%93%E8%B3%BCFrontSide(%E5%89%8D%E5%8F%B020211025)/index.php");
+                header("location:http://127.0.0.1/Easy/happygoFrontSide/Index/index");
             }
             break;
         case "WithdrawApply":
@@ -341,6 +346,99 @@
         }else {
             return $_IsLonin;
         }
+    }
+
+    function Order_list() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            try {
+                CDbShell::Add_S($_POST);
+                CDbShell::Add_S($_GET);
+                CDbShell::Add_S($_SESSION);
+                CDbShell::Add_S($_COOKIE);
+                CDbShell::Connect();
+                if("OrderSellDel" == $_POST["fun"]){
+                    $field = array("State");
+                    $value = array(4);
+                    CDbShell::update("ordertobuy", $field, $value, "OrderNumber = ".$_POST["OrderNumber"]); 
+                    echo "window.location.reload()";exit;
+                }
+                CDbShell::query("SELECT * FROM member WHERE MemberAccount='".CSession::GetVar("Account")."'  AND MemberPassword = '".CSession::GetVar("Password")."'" );
+                $Rowm = CDbShell::fetch_array();
+                $_Condition = "";
+                if($_POST["OrderNumber"] != ""){
+                    $_Condition .= " AND ob.OrderNumber like '%".$_POST["OrderNumber"]."%'";
+                }
+                if($_POST["BuyMemberAccount"] != ""){
+                    $_Condition .= " AND m.MemberAccount like '%".$_POST["BuyMemberAccount"]."%'";
+                }
+                if($_POST["PaymentCode"] != "" ){
+                    $_Condition .= " AND ob.PaymentCode like '%".$_POST["PaymentCode"]."%'";
+                }
+                CDbShell::query("SELECT
+                o.MemberId,
+                o.ProductNumber,
+                o.ProductId,
+                o.ProductTitle,
+                case when o.GamePlatform = 1 then 'Android' when o.GamePlatform = 2 then 'iOS' when o.GamePlatform = 3 then '電腦' when o.GamePlatform = 4 then 'Steam' end as GamePlatform,
+                pt.TypeName,
+                g.GameName,
+                o.CreateDate,
+                o.ModifyDate
+                FROM `order` o
+                LEFT JOIN member m ON m.MemberId = o.MemberId
+                LEFT JOIN producttype pt on pt.TypeId = o.TypeId
+                LEFT JOIN game g ON g.GameId = o.GameId 
+                WHERE o.MemberId = '".$Rowm['MemberId']."' " . $_Condition . " order by o.CreateDate desc ");    
+
+                if (CDbShell::num_rows() > 0) {
+                    $r=1;
+                    while ($Row = CDbShell::fetch_array()) {
+                        // empty($Row['SumPrice']) ? $Row['Price'] : $Row['SumPrice']
+                        // $EvaluState = ($Row['EvaluState'] == '2') ? 'style="display: none;"' : '';
+                        $Price = empty($Row['SumPricePlusHand']) ? (empty($Row['SumPrice']) ? $Row['Price'] : $Row['SumPrice']) : $Row['SumPricePlusHand'];
+                        $Quantity = empty($Row['Quantity']) ? $Row['OrderQuantity'] : $Row['Quantity'];
+                        
+                        $Layout .=
+                        <<<EOF
+                        <tr>
+                            <td>{$r}</td>
+                            <td class="text_left">
+                                <ul>
+                                    <li class="title text_deepblue">{$Row['ProductTitle']}</li>
+                                    <li class="text_green">商品編號：<span>{$Row['ProductNumber']}</span></li>
+                                    <li>新增時間：<span>{$Row['CreateDate']}</span></li>
+                                    <li>遊戲伺服：<span>{$Row['GamePlatform']}</span></li>
+                                    <li>商品類型：<span>{$Row['TypeName']}</span></li>
+                                </ul>
+                            </td>
+                            <td class="sktb_btn">
+                                <input type="button" id="PublishEdit" value="修改訂單" class="btn_small btn_yellow" data-value="{$Row['ProductNumber']}">
+                                <input type="button" id="OrderListDel" value="刪除訂單" class="jsSellCanclePay btn_small btn_gray" data-value="{$Row['ProductNumber']}">
+                            </td>
+                        </tr>
+EOF;
+                        $r++;
+                    }
+                    CDbShell::DB_close();
+        
+                    echo $Layout;
+                    exit;
+                }else{
+                    $Layout=
+                        <<<EOF
+                        <td class="text_center" colspan="6" align='center' valign="middle">
+                            <img src="images/member/job-search.png" alt="">
+                            <span>查無訂單</span>
+                        </td>
+EOF;
+                    echo $Layout;exit;
+                }
+                
+            }catch(Exception $e) {
+                JSModule::ErrorJSMessage($e->getMessage());
+            } 
+        }
+        include("../order_list.html");
     }
 
     function Order_buy() {
