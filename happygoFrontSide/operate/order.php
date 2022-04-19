@@ -2011,7 +2011,7 @@ EOF;
                     fwrite($fp,"SELECT * FROM ordertobuy WHERE OrderNumber = '".$_POST['MerProductID']."' AND Status = 0".PHP_EOL);
                     fclose($fp);
                 }
-            }else if(CDbShell::num_rows() == 5){
+            }else if($_POST['RtnCode'] == 5){
                 $PaymentCode = isset($_POST['CodeNo']) ? $_POST['CodeNo'] : ($_POST['VatmBankCode']."-".$_POST['VatmAccount']);
                 CDbShell::query("UPDATE ordertobuy SET PaymentCode = '".$PaymentCode."', ExpireTime = '".$_POST['ExpireTime']."', RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'");
             }else{
