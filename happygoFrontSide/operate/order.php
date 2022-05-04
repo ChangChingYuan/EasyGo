@@ -616,9 +616,9 @@ EOF;
                 }
                 if('MemberOnline' == $_POST['fun']){
                     CDbShell::Connect();
-                    CDbShell::query("SELECT m.MemberAccount, LEFT(m.LastLoginDate, 10) as LastLoginDate, 
+                    CDbShell::query("SELECT MemberAccount, LEFT(LastLoginDate, 10) as LastLoginDate, 
                     case when LockStatus = 1 then '在線' when LockStatus = 0 then '離線' end as LockStatusStr, LockStatus 
-                    from `order` o LEFT JOIN member m on m.MemberId = o.MemberId where m.MemberAccount = '".$_POST["val"]."' group by m.MemberAccount");
+                    from member where MemberAccount = '".$_POST["val"]."' group by MemberAccount");
                     $Row = CDbShell::fetch_array();
                     $data= array($Row["MemberAccount"],$Row["LastLoginDate"],$Row["LockStatusStr"],$Row["LockStatus"]);
                     echo json_encode($data);
