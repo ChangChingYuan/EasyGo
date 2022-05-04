@@ -420,7 +420,7 @@ EOF;
                 }else{
                     $Layout=
                         <<<EOF
-                        <td class="text_center" colspan="6" align='center' valign="middle">
+                        <td class="text_center" colspan="3" align='center' valign="middle">
                             <img src="images/member/job-search.png" alt="">
                             <span>查無訂單</span>
                         </td>
