@@ -365,14 +365,8 @@
                 CDbShell::query("SELECT * FROM member WHERE MemberAccount='".CSession::GetVar("Account")."'  AND MemberPassword = '".CSession::GetVar("Password")."'" );
                 $Rowm = CDbShell::fetch_array();
                 $_Condition = "";
-                if($_POST["OrderNumber"] != ""){
-                    $_Condition .= " AND ob.OrderNumber like '%".$_POST["OrderNumber"]."%'";
-                }
-                if($_POST["BuyMemberAccount"] != ""){
-                    $_Condition .= " AND m.MemberAccount like '%".$_POST["BuyMemberAccount"]."%'";
-                }
-                if($_POST["PaymentCode"] != "" ){
-                    $_Condition .= " AND ob.PaymentCode like '%".$_POST["PaymentCode"]."%'";
+                if($_POST["ProductNumber"] != ""){
+                    $_Condition .= " AND o.ProductNumber like '%".$_POST["ProductNumber"]."%'";
                 }
                 CDbShell::query("SELECT
                 o.MemberId,
@@ -452,7 +446,35 @@ EOF;
                 if("OrderBuyDel" == $_POST["fun"]){
                     $field = array("State");
                     $value = array(4);
-                    CDbShell::update("ordertobuy", $field, $value, "OrderNumber = ".$_POST["OrderNumber"]); 
+                    CDbShell::update("ordertobuy", $field, $value, "OrderNumber = '".$_POST["OrderNumber"]."'"); 
+                    echo "window.location.reload()";exit;
+                }
+                if("OrderBuyReceive" == $_POST["fun"]){
+                    CDbShell::query("SELECT MemberId, OrderNumber, SumPrice, SellMemberId FROM ordertobuy WHERE OrderNumber= '".$_POST["OrderNumber"]."'" );
+                    $Row = CDbShell::fetch_array();
+                    if (CDbShell::num_rows() > 0) {
+                        
+                        CDbShell::query("SELECT GamePoints FROM memberfinance WHERE MemberId = '".$Row['SellMemberId']."'");
+                        $MRow = CDbShell::fetch_array();
+
+                        $field = array("State");
+                        $value = array(3);
+                        CDbShell::update("ordertobuy", $field, $value, "OrderNumber = '".$_POST["OrderNumber"]."'"); 
+
+                        Again:
+                        $ReceiveNumber = ""; 
+                        $ReceiveNumber = "PO".substr(date("Y"), -1).Date("mdH").str_pad(mt_rand(0,9999),4,'0',STR_PAD_LEFT);
+                        CDbShell::query("SELECT * FROM pointchanglog WHERE RowNumber = '".$ReceiveNumber."'");
+                        if (CDbShell::num_rows() > 0) {
+                            goto Again;
+                        }
+
+                        $field = array("RowNumber","MemberId","OrderNumber","BeforePoints","ChangePoints","AfterPoints","ChangeEvent","PointChangState","Note","CreateDate");
+                        $value = array($ReceiveNumber,$Row['SellMemberId'],$Row['OrderNumber'],$MRow["GamePoints"], floatval($Row['SumPrice']), bcadd(floatval($MRow["GamePoints"]), floatval($Row['SumPrice'])),1,"0","商品販售",date('Y/m/d H:i:s'));
+                        CDbShell::insert("pointchanglog", $field, $value); 
+
+                        CDbShell::query("UPDATE memberfinance SET GamePoints = GamePoints + ".floatval($Row['SumPrice'])." WHERE MemberId = '".$Row['SellMemberId']."'");
+                    }
                     echo "window.location.reload()";exit;
                 }
                 CDbShell::query("SELECT * FROM member WHERE MemberAccount='".CSession::GetVar("Account")."'  AND MemberPassword = '".CSession::GetVar("Password")."'" );
@@ -510,24 +532,28 @@ EOF;
                                 $display = $Row['PaymentCode'] == "" ? '' : 'style="display: none;"' ;
                                 $Deldisplay = '';
                                 $Evaludisplay = 'style="display: none;"';
+                                $Receivedisplay = 'style="display: none;"';
                             break;
                             case "待收貨":
                                 $text_color = "text_orange";
                                 $display = 'style="display: none;"';
                                 $Deldisplay = 'style="display: none;"';
                                 $Evaludisplay = 'style="display: none;"';
+                                $Receivedisplay = '';
                             break;
                             case "已完成":
                                 $text_color = "text_blue";
                                 $display = 'style="display: none;"';
                                 $Deldisplay = 'style="display: none;"';
                                 $Evaludisplay = '';
+                                $Receivedisplay = 'style="display: none;"';
                             break;
                             case "已取消":
                                 $text_color = "text_gray";
                                 $display = 'style="display: none;"';
                                 $Deldisplay = 'style="display: none;"';
                                 $Evaludisplay = 'style="display: none;"';
+                                $Receivedisplay = 'style="display: none;"';
                             break;
                         }
                         $PointCardKind = empty($Row['PointCardKind']) ? 'style="display: none;"' : '';
@@ -556,6 +582,7 @@ EOF;
                                 <input type="button" id="Paynow" value="立即付款" class="btn_small btn_pink" {$display} data-value="{$Row['OrderNumber']}">
                                 <input type="button" id="OrderBuyDel" value="取消交易" class="jsCanclePay btn_small btn_gray" {$Deldisplay} data-value="{$Row['OrderNumber']}">
                                 <input type="button" id="OrderBuyEvalu" value="給予評價" class="js_BuyComment btn_small btn_blue" {$Evaludisplay} data-value="{$Row['OrderNumber']}">
+                                <input type="button" id="OrderBuyReceive" value="已收貨" class="btn_small btn_purple" {$Receivedisplay} data-value="{$Row['OrderNumber']}">
                                 <input type="button" id="OrderBuyInfo" value="聯絡賣家" class="btn_small btn_green" data-value="{$Row['OrderNumber']}">
                             </td>
                         </tr>
@@ -787,7 +814,7 @@ EOF;
                     if (!empty($_FILES['IDPicUrl']) && $_FILES['IDPicUrl']['tmp_name'] != "") {
 
                         if (preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['IDPicUrl']['name']) == "jpg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['IDPicUrl']['name']) == "jpeg" || preg_replace('/^.*\.([^.]+)$/D', '$1', $_FILES['IDPicUrl']['name']) == "png") {
-                                $IDPicUrl = CommonElement::CopyImg($Rowm['MemberId'], $_FILES['IDPicUrl'], "../../happygoFrontSide/IDimage/");
+                                $IDPicUrl = CommonElement::CopyImg($Rowm['MemberId'], $_FILES['IDPicUrl'], "../happygoFrontSide/IDimage/");
                                 // echo $IDPicUrl;exit;
                                 $field = array("IDPicUrl","IDVerify");
                                 $value = array($IDPicUrl,2);

@@ -49,7 +49,7 @@ function GameList() {
             $Layout .=
             <<<EOF
             <div class="ga_item" id="GameListbnt" data-value="{$Row['GameId']}">
-                <img src="../快易購backSite(後台20211012)/picturedata/{$Row['FileName']}" alt="遊戲" class="ga_pic">
+                <img src="../happygobackSite/picturedata/{$Row['FileName']}" alt="遊戲" class="ga_pic">
                 <div class="ga_title">{$Row['GameInfo']}</div>
                 <div class="ga_shopping">
                     <input type="button" value="" class="fa fa-cart-plus-w">

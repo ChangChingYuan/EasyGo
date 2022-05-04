@@ -468,6 +468,30 @@
         </div>
     </div>
 
+    <!--跳框(買家已收貨)-->
+    <div id="popup_Receive" class="popup_windows" style="display: none;">
+        <div class="popup_container">
+            <div class="popup">
+                <!--標題 + 關閉按鈕-->
+                <div class="btn_close" onclick="document.getElementById('popup_Receive').style.display='none'"></div>
+                <div class="popup_title">
+                    <span>確認已收到貨物</span>
+                </div>
+                <!--內容-->
+                <div class="popup_in">
+                    <div class="col_1 listset text_center">確認後，金額將撥款給賣家</div>
+                    <!--按鈕(2顆)-->
+                    <div class="col_2">
+                        <input type="button" value="取消" onclick="document.getElementById('popup_Receive').style.display='none'" class="btn_big btn_gray">
+                    </div>
+                    <div class="col_2">
+                        <input type="button" id="ReceiveCheck" value="確認" class="btn_big btn_yellow">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!--跳框_給予評價-->
     <div id="popup_BuyComment" class="popup_windows" style="display: none;">
         <div class="popup_container">

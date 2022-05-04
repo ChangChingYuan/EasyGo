@@ -77,18 +77,144 @@ $(function() {
         });
     }
 
-    if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Publish_edit") {
-        $.post("Order/Publish_edit", {fun:"PublishList"}, data =>{
+    if (location.href.substring(location.href.lastIndexOf('/') + 1) == "PublishEdit") {
+
+        $.post("Order/AddOrder", { fun: "ProductId" }, data => {
+            // console.log(data);
+            // alert(123);
+            let obj = JSON.parse(data);
+            if (obj.ErrorCode) {
+                alert(obj.ErrorText);
+            } else {
+                for(let i=0;i<obj.length;i++){
+                    $("select[id='ProductId']").append(
+                    `<option value="${obj[i].ProductId}">${obj[i].ProductName}</option>`
+                    );
+                }
+            }
+        });
+
+        // console.log(sessionStorage.getItem('session_ProductNumber'));
+        $.post("Order/PublishEdit", {fun:"PublishList", ProductNumber:sessionStorage.getItem('session_ProductNumber')}, data =>{
+            // console.log(data);
             var obj = JSON.parse(data);
-            console.log(obj[5]);
-            let a = 6;
-            $('input[id="pa_radio'+a+'"]').prop('checked', true);
+            
+            $.post("Order/AddOrder", { fun: "GameName", ProductId:obj[2]}, data => {
+                // console.log(data);
+                if(data != "null"){
+                    let objgame = JSON.parse(data);
+                    console.log(objgame.length);
+                    if (objgame.ErrorCode) {
+                        alert(objgame.ErrorText);
+                    } else {
+                        for(let i=0;i<objgame.length;i++){
+                            $("select[id='GameName']").append(
+                            `<option value="${objgame[i].GameId}">${objgame[i].GameName}</option>`
+                            );
+                        }
+                    }
+                    $('select[name="ProductId"]').val(obj[2]);
+                    $('select[name="GameName"]').val(obj[8]);
+                }
+            });
+            // console.log(obj[8]);
+            $('input[id="pa_radio'+obj[6]+'"]').prop('checked', true);
+            $('span[name="ProductNumber"]').html(obj[1]);
+            $('input[name="ProductTitle"]').val(obj[3]);
+            $('select[name="GamePlatform"]').val(obj[4]);
+            $('a[name="FileName"]').html(obj[5]);
+            $('img[name="FileNameImg"]').attr("src", "../happygoFrontSide/picturedata/"+obj[5]);
+            // $('input[name="FileName"]').val(obj[5]);
+            $('input[name="TypeId"]').val(obj[6]);
+            $('input[name="TypeName"]').val(obj[7]);
+            $('input[name="GameServer"]').val(obj[9]);
+            $('input[name="PointCardKind"]').val(obj[10]);
+            $('input[name="ShelfState"]').val(obj[11]);
+            $('input[name="Price"]').val(obj[12]);
+            $('input[name="OrderQuantity"]').val(obj[13]);
+            $('input[name="GameCoinQuantity"]').val(obj[14]);
+            $('input[name="CurrencyValue"]').val(obj[15]);
+            $('select[name="Currency"]').val(obj[16]);
+            $('input[name="KuTsuenQuantity"]').val(obj[17]);
+            $('textarea[name="ProductInfo"]').val(obj[18]);
+            $('input[name="GameAccount"]').val(obj[19]);
+            $('input[name="CharacterName"]').val(obj[20]);
+            $('input[name="CharacterLevel"]').val(obj[21]);
+            $('input[name="CharacterProfession"]').val(obj[22]);
+            $('input[name="CharacterSex"]').val(obj[23]);
+            $('input[name="ChangePassword"]').val(obj[24]);
+            $('a[name="FileInfo1"]').html(obj[25]);
+            $('img[name="FileInfo1Img"]').attr("src", "../happygoFrontSide/Infoimg1/"+obj[25]);
+            $('a[name="FileInfo2"]').html(obj[26]);
+            $('img[name="FileInfo2Img"]').attr("src", "../happygoFrontSide/Infoimg2/"+obj[26]);
+            // $('input[name="FileInfo1"]').val(obj[25]);
+            // $('input[name="FileInfo2"]').val(obj[26]);
+            $('input[name="ChiuHsiaoQuantity"]').val(obj[27]);
+            $('input[name="HsiaoShouQuantity"]').val(obj[28]);
+            $('input[name="HandlingFee"]').val(obj[29]);
+        });
+
+        $("select[id='ProductId']").on('change',  function(Event) {
+            //console.log( $(this).val());
+            var id = $(this);
+            // $("#GameName option").remove();
+            // $("select[id='GameName']").append(`<option value="">請選擇</option>`);
+
+            $(this).parent().next().next().next().children("#GameName").children().remove();
+            id.parent().next().next().next().children('select[id="GameName"]').append(`<option value="">請選擇</option>`);
+            let ProductId = ($(this).val() == "") ? 99 : $(this).val();
+
+            $.post("Order/AddOrder", { fun: "GameName", ProductId:ProductId}, data => {
+                // console.log(data);
+                if(data != "null"){
+                    let obj = JSON.parse(data);
+                    if (obj.ErrorCode) {
+                        alert(obj.ErrorText);
+                    } else {
+                        for(let i=0;i<obj.length;i++){
+                            id.parent().next().next().next().children('select[id="GameName"]').append(`<option value="${obj[i].GameId}">${obj[i].GameName}</option>`);
+                        }
+                    }
+                }
+            });
+        });
+
+        $('form[id="OrderFormEdit"]').submit(function(e) {
+            //alert('123');
+            var ProductNumber = sessionStorage.getItem('session_ProductNumber');
+            var formObj = $(this);
+            var formURL = formObj.attr("action");
+            var formData = new FormData(this);
+            formData.append('fun',"PublishEdit");
+            formData.append('ProductNumber',ProductNumber);
+            $.ajax({
+                //url: window.location.href.substr(window.location.href.lastIndexOf("/")+1),            
+                url: "Order/PublishEdit",
+                type: 'POST',
+                data:  formData,
+                mimeType:"multipart/form-data",
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function(data, textStatus, jqXHR)
+                {
+                    // $('div[id="popup_SentSuccess"]').css('display','inline');
+                    alert("修改成功");
+                    // console.log(data);
+                    eval(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) 
+                {
+                    $('#divLoading').hide();
+                }          
+            });
+            e.preventDefault(); //Prevent Default action. 
         });
     }
 
     if (location.href.substring(location.href.lastIndexOf('/') + 1) == "Order_list") {
         $.post("Member/Order_list", data =>{
-            console.log(data);
+            // console.log(data);
             $('tbody[id="Order_list"]').html(data);
 
             $("input[id='PublishEdit']").on('click',  function(Event) {
@@ -96,9 +222,9 @@ $(function() {
                 sessionStorage.setItem('session_ProductNumber', ProductNumber);
 	            console.log(ProductNumber);
 				var mapForm = document.createElement("form");
-				mapForm.target = "_blank";    
+				// mapForm.target = "_blank";    
 				mapForm.method = "POST";
-				mapForm.action = "Order/Publish_edit";
+				mapForm.action = "Order/PublishEdit";
 				// Create an input
 				var mapInput = document.createElement("input");
 				mapInput.type = "hidden";
@@ -114,6 +240,36 @@ $(function() {
 				// Just submit
 				mapForm.submit();
 			});
+        });
+        $("input[id='OrderListSearch']").on('click',  function(Event) {
+            $.post("Member/Order_list", {ProductNumber:$('input[id="ProductNumber"]').val()}, data =>{
+                // console.log(data);
+                $('tbody[id="Order_list"]').html(data);
+
+                $("input[id='PublishEdit']").on('click',  function(Event) {
+                    let ProductNumber = $(this).data("value");
+                    sessionStorage.setItem('session_ProductNumber', ProductNumber);
+                    console.log(ProductNumber);
+                    var mapForm = document.createElement("form");
+                    // mapForm.target = "_blank";    
+                    mapForm.method = "POST";
+                    mapForm.action = "Order/PublishEdit";
+                    // Create an input
+                    var mapInput = document.createElement("input");
+                    mapInput.type = "hidden";
+                    mapInput.name = "ProductNumber";
+                    mapInput.value = ProductNumber;
+        
+                    // Add the input to the form
+                    mapForm.appendChild(mapInput);
+        
+                    // Add the form to dom
+                    document.body.appendChild(mapForm);
+        
+                    // Just submit
+                    mapForm.submit();
+                });
+            });
         });
     }
 
@@ -314,12 +470,25 @@ $(function() {
 			});
             $("input[id='OrderBuyDel']").on('click',  function(Event) {
                 let OrderNumber = $(this).data("value");
-                sessionStorage.setItem('session_OrderNumber', OrderNumber);
+                // sessionStorage.setItem('session_OrderNumber', OrderNumber);
                 console.log(OrderNumber);
                 Event.preventDefault();
                 document.getElementById("popup_CanclePay").style.display = "block";
                 $("input[id='DelCheck']").on('click',  function(Event) {
-                    $.post("Member/Order_buy", {fun:"OrderBuyDel",OrderNumber:sessionStorage.getItem('session_OrderNumber')}, data =>{
+                    $.post("Member/Order_buy", {fun:"OrderBuyDel",OrderNumber:OrderNumber}, data =>{
+                        // console.log(data);
+                        eval(data);
+                    });
+                });
+            });
+            $("input[id='OrderBuyReceive']").on('click',  function(Event) {
+                let OrderNumber = $(this).data("value");
+                // sessionStorage.setItem('session_OrderNumber', OrderNumber);
+                console.log(OrderNumber);
+                Event.preventDefault();
+                document.getElementById("popup_Receive").style.display = "block";
+                $("input[id='ReceiveCheck']").on('click',  function(Event) {
+                    $.post("Member/Order_buy", {fun:"OrderBuyReceive",OrderNumber:OrderNumber}, data =>{
                         // console.log(data);
                         eval(data);
                     });

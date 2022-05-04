@@ -18,8 +18,8 @@
         case "AddOrder": //Publish
             AddOrder();
             break;
-        case "Publish_edit":
-            Publish_edit();
+        case "PublishEdit":
+            PublishEdit();
             break;
         case "SellList":
             SellList();
@@ -202,7 +202,7 @@ EOF;
         include("../publish.html");
     }
 
-    function Publish_edit() {
+    function PublishEdit() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             try {
                 CDbShell::Add_S($_POST);
@@ -212,16 +212,24 @@ EOF;
                 CDbShell::Connect();
                 CDbShell::query("SELECT * FROM member WHERE MemberAccount='".CSession::GetVar("Account")."'  AND MemberPassword = '".CSession::GetVar("Password")."'" );
                 $Row = CDbShell::fetch_array();
+                // if ('GameName' == $_POST['fun']) {
+                //     CDbShell::Connect();
+                //     // $ProductId = isset($_POST["ProductId"]) ? $_POST["ProductId"] : 99 ;
+                //     $Row = CDbShell::fetch_row_field("SELECT GameId, GameName FROM game ");
+                //     echo json_encode($Row);
+                //     exit;
+                // }
                 if($_POST["fun"] == "PublishList"){
                     CDbShell::query("SELECT
                     o.MemberId,
                     o.ProductNumber,
                     o.ProductId,
                     o.ProductTitle,
-                    case when o.GamePlatform = 1 then 'Android' when o.GamePlatform = 2 then 'iOS' when o.GamePlatform = 3 then '電腦' when o.GamePlatform = 4 then 'Steam' end as GamePlatform,
+                    o.GamePlatform,
+                    o.FileName,
                     o.TypeId,
                     pt.TypeName,
-                    g.GameName,
+                    o.GameId,
                     o.GameServer,
                     o.PointCardKind,
                     o.ShelfState,
@@ -251,12 +259,12 @@ EOF;
                     LEFT JOIN member m ON m.MemberId = o.MemberId
                     LEFT JOIN producttype pt on pt.TypeId = o.TypeId
                     LEFT JOIN game g ON g.GameId = o.GameId 
-                    WHERE o.MemberId = '".$Row["MemberId"]."'" );
+                    WHERE o.MemberId = '".$Row["MemberId"]."' AND o.ProductNumber = '".$_POST["ProductNumber"]."'" );
                     $Rowo = CDbShell::fetch_array();
                     if (CDbShell::num_rows() > 0) {
-                        $data= array($Rowo["MemberId"],$Rowo["ProductNumber"],$Rowo["ProductId"],$Rowo["ProductTitle"],$Rowo["GamePlatform"],$Rowo["TypeId"],$Rowo["TypeName"],
-                        $Rowo["GameName"],$Rowo["GameServer"],$Rowo["PointCardKind"],$Rowo["ShelfState"],$Rowo["Price"],$Rowo["OrderQuantity"],$Rowo["GameCoinQuantity"]
-                        ,$Rowo["CurrencyValue"],$Rowo["Currency"],$Rowo["KuTsuenQuantity"],$Rowo["ProductInfo"],$Rowo["GameAccount"],$Rowo["CharacterName"]
+                        $data= array($Rowo["MemberId"],$Rowo["ProductNumber"],$Rowo["ProductId"],$Rowo["ProductTitle"],$Rowo["GamePlatform"],$Rowo["FileName"],$Rowo["TypeId"]
+                        ,$Rowo["TypeName"],$Rowo["GameId"],$Rowo["GameServer"],$Rowo["PointCardKind"],$Rowo["ShelfState"],$Rowo["Price"],$Rowo["OrderQuantity"]
+                        ,$Rowo["GameCoinQuantity"],$Rowo["CurrencyValue"],$Rowo["Currency"],$Rowo["KuTsuenQuantity"],$Rowo["ProductInfo"],$Rowo["GameAccount"],$Rowo["CharacterName"]
                         ,$Rowo["CharacterLevel"],$Rowo["CharacterProfession"],$Rowo["CharacterSex"],$Rowo["ChangePassword"],$Rowo["FileInfo1"],$Rowo["FileInfo2"]
                         ,$Rowo["ChiuHsiaoQuantity"],$Rowo["HsiaoShouQuantity"],$Rowo["HandlingFee"],$Rowo["OrderState"],$Rowo["CreateDate"],$Rowo["ModifyDate"],$Rowo["Scan"]);
                         echo json_encode($data);
@@ -265,10 +273,21 @@ EOF;
                 }
 
                 if($_POST["fun"] == "PublishEdit"){
+                    $OrderQuantity = (isset($_GET['OrderQuantity'])) ? $_GET['OrderQuantity'] : ((isset($_POST['OrderQuantity'])) ? $_POST['OrderQuantity'] : 0);
+                    $GameCoinQuantity = (isset($_GET['GameCoinQuantity'])) ? $_GET['GameCoinQuantity'] : ((isset($_POST['GameCoinQuantity'])) ? $_POST['GameCoinQuantity'] : 0);
+                    $KuTsuenQuantity = (isset($_GET['KuTsuenQuantity'])) ? $_GET['KuTsuenQuantity'] : ((isset($_POST['KuTsuenQuantity'])) ? $_POST['KuTsuenQuantity'] : 0);
+                    $ChiuHsiaoQuantity = (isset($_GET['ChiuHsiaoQuantity'])) ? $_GET['ChiuHsiaoQuantity'] : ((isset($_POST['ChiuHsiaoQuantity'])) ? $_POST['ChiuHsiaoQuantity'] : 0);
+                    $HsiaoShouQuantity = (isset($_GET['HsiaoShouQuantity'])) ? $_GET['HsiaoShouQuantity'] : ((isset($_POST['HsiaoShouQuantity'])) ? $_POST['HsiaoShouQuantity'] : 0);
+                    $HandlingFee = (isset($_GET['HandlingFee'])) ? $_GET['HandlingFee'] : ((isset($_POST['HandlingFee'])) ? $_POST['HandlingFee'] : 0);
                     $MemberId=$Row["MemberId"];
-                    $field = array("MemberId","ProductNumber","ProductId","TypeId","GamePlatform","GameId","GameServer","ProductTitle","PointCardKind","ShelfState","Price","OrderQuantity","GameCoinQuantity","CurrencyValue","Currency","KuTsuenQuantity","ProductInfo","GameAccount","CharacterName","CharacterLevel","CharacterProfession","CharacterSex","ChangePassword","FileInfo1","FileInfo2","ChiuHsiaoQuantity","HsiaoShouQuantity","HandlingFee","OrderState","CreateDate","ModifyDate","Scan");
-                    $value = array($Row["MemberId"],$_POST["ProductNumber"],$_POST["ProductId"],$_POST["TypeId"],$_POST["GamePlatform"],$_POST["GameName"],$_POST["GameServer"],$_POST["ProductTitle"],$_POST["PointCardKind"],"1",$_POST["Price"],$OrderQuantity,$GameCoinQuantity,$_POST["CurrencyValue"],$_POST["Currency"],$KuTsuenQuantity,$_POST["ProductInfo"],$_POST["GameAccount"],$_POST["CharacterName"],$_POST["CharacterLevel"],$_POST["CharacterProfession"],$_POST["CharacterSex"],$_POST["ChangePassword"],$_POST["FileInfo1"],$_POST["FileInfo2"],$ChiuHsiaoQuantity,$HsiaoShouQuantity,$HandlingFee,'0',date('Y/m/d H:i:s'),date('Y/m/d H:i:s'),0);
-                    CDbShell::insert("`order`", $field, $value);
+                    $field = array("ProductId","TypeId","GamePlatform","GameId","GameServer","ProductTitle","PointCardKind","ShelfState","Price","OrderQuantity","GameCoinQuantity",
+                                    "CurrencyValue","Currency","KuTsuenQuantity","ProductInfo","GameAccount","CharacterName","CharacterLevel","CharacterProfession","CharacterSex",
+                                    "ChangePassword","ChiuHsiaoQuantity","HsiaoShouQuantity","HandlingFee","ModifyDate","Scan");
+                    $value = array($_POST["ProductId"],$_POST["TypeId"],$_POST["GamePlatform"],$_POST["GameName"],$_POST["GameServer"],$_POST["ProductTitle"],$_POST["PointCardKind"],
+                                    "1",$_POST["Price"],$OrderQuantity,$GameCoinQuantity,$_POST["CurrencyValue"],$_POST["Currency"],$KuTsuenQuantity,$_POST["ProductInfo"],
+                                    $_POST["GameAccount"],$_POST["CharacterName"],$_POST["CharacterLevel"],$_POST["CharacterProfession"],$_POST["CharacterSex"],$_POST["ChangePassword"],
+                                    $ChiuHsiaoQuantity,$HsiaoShouQuantity,$HandlingFee,date('Y/m/d H:i:s'),0);
+                    CDbShell::update("`order`", $field, $value, " MemberId = ".$MemberId." AND ProductNumber = '".$_POST["ProductNumber"]."'" );
                     $Id = CDbShell::insert_id();
 
                     if (!empty($_FILES['FileName']) && $_FILES['FileName']['tmp_name'] != "") {
@@ -278,7 +297,7 @@ EOF;
                                 // echo $Id;exit;
                                 $field = array("FileName");
                                 $value = array($FileName);
-                                CDbShell::update("`order`", $field, $value, "`Row` = ".$Id); 
+                                CDbShell::update("`order`", $field, $value, " MemberId = ".$MemberId." AND ProductNumber = '".$_POST["ProductNumber"]."'"); 
                         }else {
                             throw new exception("照片不符合!");
                         }
@@ -290,7 +309,7 @@ EOF;
                                 // echo $Id;exit;
                                 $field = array("FileInfo1");
                                 $value = array($FileInfo1);
-                                CDbShell::update("`order`", $field, $value, "`Row` = ".$Id); 
+                                CDbShell::update("`order`", $field, $value, " MemberId = ".$MemberId." AND ProductNumber = '".$_POST["ProductNumber"]."'"); 
                         }else {
                             throw new exception("照片不符合!");
                         }
@@ -302,13 +321,13 @@ EOF;
                                 // echo $Id;exit;
                                 $field = array("FileInfo2");
                                 $value = array($FileInfo2);
-                                CDbShell::update("`order`", $field, $value, "`Row` = ".$Id); 
+                                CDbShell::update("`order`", $field, $value, " MemberId = ".$MemberId." AND ProductNumber = '".$_POST["ProductNumber"]."'"); 
                         }else {
                             throw new exception("照片不符合!");
                         }
                     }
 
-                    echo "window.location.href='Member/Center'";exit;
+                    echo "window.location.href='Member/Order_list'";exit;
                 }
             }catch(Exception $e) {
                 JSModule::ErrorJSMessage($e->getMessage());
@@ -1962,7 +1981,7 @@ EOF;
                         CDbShell::begin();
                         $PayBankCode = isset($_POST['PayBankCode']) ? ($_POST['PayBankCode']."-".$_POST['PayBankAccount']) : "";
                         $StoreName = isset($_POST['StoreName']) ? ($_POST['StoreName'].$_POST['StoreID']) : "" ;
-                        CDbShell::query("UPDATE ordertobuy SET PayNumber = $PayBankCode, PayAddress = $StoreName, `State` = 2, PayDate ='".$_POST['PaymentDate']."', RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'");
+                        CDbShell::query("UPDATE ordertobuy SET PayNumber = '".$PayBankCode."', PayAddress = '".$StoreName."', `State` = 2, PayDate ='".$_POST['PaymentDate']."', RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'");
                         
                         // $field = array("PayDate","State","RtnCode","RtnMessage");
                         // $value = array($_POST['PaymentDate'],'2',$_POST['RtnCode'],$_POST['RtnMessage']);
@@ -1976,28 +1995,28 @@ EOF;
                             throw new exception("-97 系統錯誤 > ".$_ErrorStr);
                         }
                         
-                        CDbShell::query("INSERT INTO pointchanglog (MemberId, BeforePoints, ChangePoints, AfterPoints, ChangeEvent, PointChangState, Note, CreateDate) 
-                        VALUES (".$SRow["SellMemberId"].", ".$MRow["GamePoints"].", ".floatval($SRow['SumPrice']).", ".bcadd(floatval($MRow["GamePoints"]), floatval($SRow['SumPrice'])).", '2', '0', '訂購付款', CURRENT_TIMESTAMP(3) )");
+                        // CDbShell::query("INSERT INTO pointchanglog (MemberId, BeforePoints, ChangePoints, AfterPoints, ChangeEvent, PointChangState, Note, CreateDate) 
+                        // VALUES (".$SRow["SellMemberId"].", ".$MRow["GamePoints"].", ".floatval($SRow['SumPrice']).", ".bcadd(floatval($MRow["GamePoints"]), floatval($SRow['SumPrice'])).", '2', '0', '訂購付款', CURRENT_TIMESTAMP(3) )");
 
-                        // $field = array("MemberId","BeforePoints","ChangePoints","AfterPoints","ChangeEvent","PointChangState","Note","CreateDate");
-                        // $value = array($SRow["MemberId"], $MRow["GamePoints"], floatval($SRow['Points']), bcadd(floatval($MRow["GamePoints"]),floatval($SRow['Points'])), 2, '0', '訂購付款', CURRENT_TIMESTAMP(3));
-                        // CDbShell::insert("`pointchanglog`", $field, $value);
-                        if (CDbShell::GetErrorNo() != 0) {
-                            $_ErrorStr = CDbShell::GetErrorStr();
-                            CDbShell::rollback();
-                            CDbShell::DB_close();
+                        // // $field = array("MemberId","BeforePoints","ChangePoints","AfterPoints","ChangeEvent","PointChangState","Note","CreateDate");
+                        // // $value = array($SRow["MemberId"], $MRow["GamePoints"], floatval($SRow['Points']), bcadd(floatval($MRow["GamePoints"]),floatval($SRow['Points'])), 2, '0', '訂購付款', CURRENT_TIMESTAMP(3));
+                        // // CDbShell::insert("`pointchanglog`", $field, $value);
+                        // if (CDbShell::GetErrorNo() != 0) {
+                        //     $_ErrorStr = CDbShell::GetErrorStr();
+                        //     CDbShell::rollback();
+                        //     CDbShell::DB_close();
                             
-                            throw new exception("-98 系統錯誤 > ".$_ErrorStr);
-                        }
+                        //     throw new exception("-98 系統錯誤 > ".$_ErrorStr);
+                        // }
 
-                        CDbShell::query("UPDATE memberfinance SET GamePoints = GamePoints + ".floatval($SRow['SumPrice'])." WHERE MemberId = '".$SRow['SellMemberId']."'");
-                        if (CDbShell::GetErrorNo() != 0) {
-                            $_ErrorStr = CDbShell::GetErrorStr();
-                            CDbShell::rollback();
-                            CDbShell::DB_close();
+                        // CDbShell::query("UPDATE memberfinance SET GamePoints = GamePoints + ".floatval($SRow['SumPrice'])." WHERE MemberId = '".$SRow['SellMemberId']."'");
+                        // if (CDbShell::GetErrorNo() != 0) {
+                        //     $_ErrorStr = CDbShell::GetErrorStr();
+                        //     CDbShell::rollback();
+                        //     CDbShell::DB_close();
                             
-                            throw new exception("-99 系統錯誤 > ".$_ErrorStr);
-                        }
+                        //     throw new exception("-99 系統錯誤 > ".$_ErrorStr);
+                        // }
 
                         CDbShell::commit();
                         CDbShell::DB_close();
@@ -2029,7 +2048,7 @@ EOF;
                 fwrite($fp, " ExpireTime  >> ". $_POST['ExpireTime'] .PHP_EOL);
                 fwrite($fp, " RtnMessage  >> ". $_POST['RtnMessage'] .PHP_EOL);
                 fwrite($fp, " PaymentCode  >> ". $PaymentCode .PHP_EOL);
-                fwrite($fp, " SQL  >> ". ("UPDATE ordertobuy SET PaymentCode = '".$PaymentCode."', ExpireTime = '".$_POST['ExpireTime']."', RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'") .PHP_EOL);
+                // fwrite($fp, " SQL  >> ". ("UPDATE ordertobuy SET PaymentCode = '".$PaymentCode."', ExpireTime = '".$_POST['ExpireTime']."', RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'") .PHP_EOL);
 
                 // $PaymentCode = $_POST['CodeNo'] != "" ? $_POST['CodeNo'] : ($_POST['VatmBankCode']."-".$_POST['VatmAccount']);
                 CDbShell::query("UPDATE ordertobuy SET PaymentCode = '".$PaymentCode."', ExpireTime = '".$_POST['ExpireTime']."', RtnCode = '".$_POST['RtnCode']."', RtnMessage = '".$_POST['RtnMessage']."' WHERE OrderNumber = '".$_POST['MerProductID']."'");

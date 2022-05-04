@@ -187,7 +187,7 @@ $(function() {
             $('span[name="Tiquan"]').html(obj[23]);
             $('span[name="TiquanMoney"]').html(obj[24]);
             $('a[name="IDPicUrl"]').html(obj[26]);
-            $('img[name="IDPicUrlImg"]').attr("src", "../../快易購FrontSide(前台20211025)/IDimage/"+obj[26]);
+            $('img[name="IDPicUrlImg"]').attr("src", "../happygoFrontSide/IDimage/"+obj[26]);
             
             // eval(data);
         });

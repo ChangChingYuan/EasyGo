@@ -47,15 +47,15 @@
         <div class="table_wrap">
             <div class="panel_wrap create_gd_wrap">
                 <!-- 頁籤選取按鈕(圓點隱藏)+需對應下方 label -->
-                <input type="radio" id="pa_radio1" name="panel_radio" class="panel_control" checked>
                 <input type="radio" id="pa_radio2" name="panel_radio" class="panel_control">
                 <input type="radio" id="pa_radio3" name="panel_radio" class="panel_control">
-                <input type="radio" id="pa_radio4" name="panel_radio" class="panel_control">
-                <input type="radio" id="pa_radio5" name="panel_radio" class="panel_control">
+                <input type="radio" id="pa_radio1" name="panel_radio" class="panel_control">
                 <input type="radio" id="pa_radio6" name="panel_radio" class="panel_control">
                 <input type="radio" id="pa_radio7" name="panel_radio" class="panel_control">
+                <input type="radio" id="pa_radio8" name="panel_radio" class="panel_control">
+                <input type="radio" id="pa_radio9" name="panel_radio" class="panel_control">
                 <!-- 頁籤選取按鈕(此父層"panel_tab_bigwarp"勿刪除，要設定分頁拖曳用 -->
-                <div class="panel_tab_bigwarp">
+                <!-- <div class="panel_tab_bigwarp">
                     <div class="panel_tab_wrap">
                         <label for="pa_radio1" class="panel_tab_label create_goods_label" id="GameCurrency" data-value="2">遊戲幣</label>
                         <label for="pa_radio2" class="panel_tab_label create_goods_label" id="GameAccount" data-value="3">帳號</label>
@@ -65,13 +65,13 @@
                         <label for="pa_radio6" class="panel_tab_label create_goods_label" id="GameGift" data-value="8">送禮</label>
                         <label for="pa_radio7" class="panel_tab_label create_goods_label" id="GameOther" data-value="9">其他</label>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- 頁籤-內容 -->
                 <div class="panel_content_wrap create_content_wrap">
                     <!-- 分頁1(遊戲幣) -->
-                    <div class="pa_content pa_content1">
-                        <form id="OrderForm" name="OrderForm" method="post" enctype="multipart/form-data">
+                    <div class="pa_content pa_content2" name="PublishList2">
+                        <form id="OrderFormEdit" name="OrderFormEdit1" method="post" enctype="multipart/form-data">
                             <!-- <form id="GameCurrency" name="GameCurrency"> -->
                             <!-- 上方區塊內容 -->
                             <div class="create_top">
@@ -82,14 +82,14 @@
                                         <input type="hidden" id="TypeId" name="TypeId" value="2"></div>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)</div>
-                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)<a name="FileName" onclick="document.getElementById('popup_FileName').style.display=''"></a></div>
+                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
                                     <div class="input_title">商品主分類</div>
                                     <select id="ProductId" name="ProductId" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                 </div>
                                 <div class="col_2">
@@ -109,7 +109,7 @@
                                 <div class="col_1">
                                     <div class="input_title">遊戲名稱</div>
                                     <select id="GameName" name="GameName" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                     <!-- <input type="text" id="GameName" name="GameName" placeholder="限25個字" value="" maxlength="25" class="input100" required> -->
                                 </div>
@@ -153,7 +153,7 @@
                                 </div>
                             </div>
                             <!-- 下方區塊內容 -->
-                            <div class="create_end">
+                            <div class="create_end" style="display: none;">
                                 <div class="col_1 text_blod">購買設定 (商品有效期 <span class="title text_red">30天</span>)</div>
                                 <!-- 購買設定 checkbox -->
                                 <div class="col_1">
@@ -196,8 +196,8 @@
                     </div>
 
                     <!-- 分頁2(帳號) -->
-                    <div class="pa_content pa_content2">
-                        <form id="OrderForm" name="OrderForm" method="post" enctype="multipart/form-data">
+                    <div class="pa_content pa_content3" name="PublishList3">
+                        <form id="OrderFormEdit" name="OrderFormEdit" method="post" enctype="multipart/form-data">
                             <!-- 上方區塊內容 -->
                             <div class="create_top">
                                 <div class="col_1">
@@ -207,15 +207,15 @@
                                         <input type="hidden" id="TypeId" name="TypeId" value="3"></div>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)</div>
-                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)<a name="FileName" onclick="document.getElementById('popup_FileName').style.display=''"></a></div>
+                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="file" name="youfile" class="input100">
                                     <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
                                     <div class="input_title">商品主分類</div>
                                     <select id="ProductId" name="ProductId" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                 </div>
                                 <div class="col_2">
@@ -235,7 +235,7 @@
                                 <div class="col_1">
                                     <div class="input_title">遊戲名稱</div>
                                     <select id="GameName" name="GameName" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                     <!-- <input type="text" id="GameName" name="GameName" placeholder="限25個字" value="" maxlength="25" class="input100" required> -->
                                 </div>
@@ -296,18 +296,18 @@
                                     <textarea id="ProductInfo" name="ProductInfo" placeholder="請輸入商品描述" maxlength="1000" class="textarea100" required></textarea>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)<a name="FileInfo1" onclick="document.getElementById('popup_FileInfo1').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)<a name="FileInfo2" onclick="document.getElementById('popup_FileInfo2').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                             </div>
                             <!-- 下方區塊內容 -->
-                            <div class="create_end">
+                            <div class="create_end" style="display: none;">
                                 <div class="col_1 text_blod">購買設定 (商品有效期 <span class="title text_red">30天</span>)</div>
                                 <!-- 購買設定 checkbox -->
                                 <div class="col_1">
@@ -350,26 +350,26 @@
                     </div>
 
                     <!-- 分頁3(點數卡) -->
-                    <div class="pa_content pa_content3">
-                        <form id="OrderForm" name="OrderForm" method="post" enctype="multipart/form-data">
+                    <div class="pa_content pa_content1" name="PublishList1">
+                        <form id="OrderFormEdit" name="OrderFormEdit" method="post" enctype="multipart/form-data">
                             <!-- 上方區塊內容 -->
                             <div class="create_top">
                                 <div class="col_1">
                                     <div class="input_title">商品編號(系統自動生成)</div>
-                                    <div class="col_text text_disabled"><span id="ProductNumber"></span>
+                                    <div class="col_text text_disabled"><span id="ProductNumber" name="ProductNumber"></span>
                                         <input type="hidden" id="ProductNumber" name="ProductNumber">
                                         <input type="hidden" id="TypeId" name="TypeId" value="1"></div>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)</div>
-                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)<a name="FileName" onclick="document.getElementById('popup_FileName').style.display=''"></a></div>
+                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="file" name="youfile" class="input100">
                                     <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
                                     <div class="input_title">商品主分類</div>
                                     <select id="ProductId" name="ProductId" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                 </div>
                                 <div class="col_2">
@@ -389,7 +389,7 @@
                                 <div class="col_2">
                                     <div class="input_title">遊戲名稱</div>
                                     <select id="GameName" name="GameName" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                     <!-- <input type="text" id="GameName" name="GameName" placeholder="限25個字" value="" maxlength="25" class="input100" required> -->
                                 </div>
@@ -421,18 +421,18 @@
                                     <textarea id="ProductInfo" name="ProductInfo" placeholder="請輸入商品描述" maxlength="1000" class="textarea100" required></textarea>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)<a name="FileInfo1" onclick="document.getElementById('popup_FileInfo1').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)<a name="FileInfo2" onclick="document.getElementById('popup_FileInfo2').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                             </div>
                             <!-- 下方區塊內容 -->
-                            <div class="create_end">
+                            <div class="create_end" style="display: none;">
                                 <div class="col_1 text_blod">購買設定 (商品有效期 <span class="title text_red">30天</span>)</div>
                                 <!-- 購買設定 checkbox -->
                                 <div class="col_1">
@@ -475,8 +475,8 @@
                     </div>
 
                     <!-- 分頁4(道具) -->
-                    <div class="pa_content pa_content4">
-                        <form id="OrderForm" name="OrderForm" method="post" enctype="multipart/form-data">
+                    <div class="pa_content pa_content6" name="PublishList6">
+                        <form id="OrderFormEdit" name="OrderFormEdit" method="post" enctype="multipart/form-data">
                             <!-- 上方區塊內容 -->
                             <div class="create_top">
                                 <div class="col_1">
@@ -486,15 +486,15 @@
                                         <input type="hidden" id="TypeId" name="TypeId" value="6"></div>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)</div>
-                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)<a name="FileName" onclick="document.getElementById('popup_FileName').style.display=''"></a></div>
+                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="file" name="youfile" class="input100">
                                     <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
                                     <div class="input_title">商品主分類</div>
                                     <select id="ProductId" name="ProductId" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                 </div>
                                 <div class="col_2">
@@ -514,7 +514,7 @@
                                 <div class="col_1">
                                     <div class="input_title">遊戲名稱</div>
                                     <select id="GameName" name="GameName" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                     <!-- <input type="text" id="GameName" name="GameName" placeholder="限25個字" value="" maxlength="25" class="input100" required> -->
                                 </div>
@@ -542,18 +542,18 @@
                                     <textarea id="ProductInfo" name="ProductInfo" placeholder="請輸入商品描述" maxlength="1000" class="textarea100" required></textarea>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)<a name="FileInfo1" onclick="document.getElementById('popup_FileInfo1').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)<a name="FileInfo2" onclick="document.getElementById('popup_FileInfo2').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                             </div>
                             <!-- 下方區塊內容 -->
-                            <div class="create_end">
+                            <div class="create_end" style="display: none;">
                                 <div class="col_1 text_blod">購買設定 (商品有效期 <span class="title text_red">30天</span>)</div>
                                 <!-- 購買設定 checkbox -->
                                 <div class="col_1">
@@ -596,8 +596,8 @@
                     </div>
 
                     <!-- 分頁5(商城) -->
-                    <div class="pa_content pa_content5">
-                        <form id="OrderForm" name="OrderForm" method="post" enctype="multipart/form-data">
+                    <div class="pa_content pa_content7" name="PublishList7">
+                        <form id="OrderFormEdit" name="OrderFormEdit" method="post" enctype="multipart/form-data">
                             <!-- 上方區塊內容 -->
                             <div class="create_top">
                                 <div class="col_1">
@@ -607,15 +607,15 @@
                                         <input type="hidden" id="TypeId" name="TypeId" value="7"></div>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)</div>
-                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)<a name="FileName" onclick="document.getElementById('popup_FileName').style.display=''"></a></div>
+                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="file" name="youfile" class="input100">
                                     <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
                                     <div class="input_title">商品主分類</div>
                                     <select id="ProductId" name="ProductId" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                 </div>
                                 <div class="col_2">
@@ -635,7 +635,7 @@
                                 <div class="col_1">
                                     <div class="input_title">遊戲名稱</div>
                                     <select id="GameName" name="GameName" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                     <!-- <input type="text" id="GameName" name="GameName" placeholder="限25個字" value="" maxlength="25" class="input100" required> -->
                                 </div>
@@ -663,18 +663,18 @@
                                     <textarea id="ProductInfo" name="ProductInfo" placeholder="請輸入商品描述" maxlength="1000" class="textarea100" required></textarea>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)<a name="FileInfo1" onclick="document.getElementById('popup_FileInfo1').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)<a name="FileInfo2" onclick="document.getElementById('popup_FileInfo2').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                             </div>
                             <!-- 下方區塊內容 -->
-                            <div class="create_end">
+                            <div class="create_end" style="display: none;">
                                 <div class="col_1 text_blod">購買設定 (商品有效期 <span class="title text_red">30天</span>)</div>
                                 <!-- 購買設定 checkbox -->
                                 <div class="col_1">
@@ -717,8 +717,8 @@
                     </div>
 
                     <!-- 分頁6(送禮) -->
-                    <div class="pa_content pa_content6">
-                        <form id="OrderForm" name="OrderForm" method="post" enctype="multipart/form-data">
+                    <div class="pa_content pa_content8" name="PublishList8">
+                        <form id="OrderFormEdit" name="OrderFormEdit" method="post" enctype="multipart/form-data">
                             <!-- 上方區塊內容 -->
                             <div class="create_top">
                                 <div class="col_1">
@@ -728,15 +728,15 @@
                                         <input type="hidden" id="TypeId" name="TypeId" value="8"></div>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)</div>
-                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)<a name="FileName" onclick="document.getElementById('popup_FileName').style.display=''"></a></div>
+                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="file" name="youfile" class="input100">
                                     <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
                                     <div class="input_title">商品主分類</div>
                                     <select id="ProductId" name="ProductId" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                 </div>
                                 <div class="col_2">
@@ -756,7 +756,7 @@
                                 <div class="col_1">
                                     <div class="input_title">遊戲名稱</div>
                                     <select id="GameName" name="GameName" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                     <!-- <input type="text" id="GameName" name="GameName" placeholder="限25個字" value="" maxlength="25" class="input100" required> -->
                                 </div>
@@ -784,18 +784,18 @@
                                     <textarea id="ProductInfo" name="ProductInfo" placeholder="請輸入商品描述" maxlength="1000" class="textarea100" required></textarea>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)<a name="FileInfo1" onclick="document.getElementById('popup_FileInfo1').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)<a name="FileInfo2" onclick="document.getElementById('popup_FileInfo2').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                             </div>
                             <!-- 下方區塊內容 -->
-                            <div class="create_end">
+                            <div class="create_end" style="display: none;">
                                 <div class="col_1 text_blod">購買設定 (商品有效期 <span class="title text_red">30天</span>)</div>
                                 <!-- 購買設定 checkbox -->
                                 <div class="col_1">
@@ -838,8 +838,8 @@
                     </div>
 
                     <!-- 分頁7(其他) -->
-                    <div class="pa_content pa_content7">
-                        <form id="OrderForm" name="OrderForm" method="post" enctype="multipart/form-data">
+                    <div class="pa_content pa_content9" name="PublishList9">
+                        <form id="OrderFormEdit" name="OrderFormEdit" method="post" enctype="multipart/form-data">
                             <!-- 上方區塊內容 -->
                             <div class="create_top">
                                 <div class="col_1">
@@ -849,15 +849,15 @@
                                         <input type="hidden" id="TypeId" name="TypeId" value="9"></div>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)</div>
-                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">商品圖(限165*165px，jpg或png檔)<a name="FileName" onclick="document.getElementById('popup_FileName').style.display=''"></a></div>
+                                    <input type="file" name="FileName" id="FileName" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="file" name="youfile" class="input100">
                                     <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
                                     <div class="input_title">商品主分類</div>
                                     <select id="ProductId" name="ProductId" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                 </div>
                                 <div class="col_2">
@@ -877,7 +877,7 @@
                                 <div class="col_1">
                                     <div class="input_title">遊戲名稱</div>
                                     <select id="GameName" name="GameName" class="select100" required>
-                                        <option value="" selected="">請選擇</option>
+                                        <!-- <option value="" selected="">請選擇</option> -->
                                     </select>
                                     <!-- <input type="text" id="GameName" name="GameName" placeholder="限25個字" value="" maxlength="25" class="input100" required> -->
                                 </div>
@@ -905,18 +905,18 @@
                                     <textarea id="ProductInfo" name="ProductInfo" placeholder="請輸入商品描述" maxlength="1000" class="textarea100" required></textarea>
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片1(最大800*600px，jpg檔)<a name="FileInfo1" onclick="document.getElementById('popup_FileInfo1').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo1" id="FileInfo1" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                                 <div class="col_2">
-                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)</div>
-                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg" required>
+                                    <div class="input_title">說明圖片2(最大800*600px，jpg檔)<a name="FileInfo2" onclick="document.getElementById('popup_FileInfo2').style.display=''"></a></div>
+                                    <input type="file" name="FileInfo2" id="FileInfo2" class="input100" accept="image/png, image/jpg, image/jpeg">
                                     <!-- <input type="button" value="上傳" class="btn_small btn_yellow"> -->
                                 </div>
                             </div>
                             <!-- 下方區塊內容 -->
-                            <div class="create_end">
+                            <div class="create_end" style="display: none;">
                                 <div class="col_1 text_blod">購買設定 (商品有效期 <span class="title text_red">30天</span>)</div>
                                 <!-- 購買設定 checkbox -->
                                 <div class="col_1">
@@ -1045,6 +1045,66 @@
                     <!--按鈕-->
                     <div class="col_1">
                         <input type="button" value="關閉" onclick="document.getElementById('popup_SentSuccess').style.display='none'" class="btn_big btn_gray">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--跳框_開啟商品圖檔-->
+    <div id="popup_FileName" class="popup_windows" style="display: none;">
+        <div class="popup_container">
+            <div class="popup">
+                <div class="btn_close" onclick="document.getElementById('popup_FileName').style.display='none'"></div>
+                <div class="popup_title">
+                    <span>商品圖</span>
+                </div>
+                <div class="popup_in">
+                    <div class="text_center"><img id="FileNameImg" name="FileNameImg" style="width: 500px;"></div><br>
+                    <!--按鈕-->
+                    <div class="popup_btn">
+                        <input type="button" value="關閉" onclick="document.getElementById('popup_FileName').style.display='none'" class="btn_big btn_gray">
+                        <!-- <input type="button" value="確認修改" class="btn_right"> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--跳框_開啟說明圖片1-->
+    <div id="popup_FileInfo1" class="popup_windows" style="display: none;">
+        <div class="popup_container">
+            <div class="popup">
+                <div class="btn_close" onclick="document.getElementById('popup_FileInfo1').style.display='none'"></div>
+                <div class="popup_title">
+                    <span>說明圖片1</span>
+                </div>
+                <div class="popup_in">
+                    <div class="text_center"><img id="FileInfo1Img" name="FileInfo1Img" style="width: 500px;"></div><br>
+                    <!--按鈕-->
+                    <div class="popup_btn">
+                        <input type="button" value="關閉" onclick="document.getElementById('popup_FileInfo1').style.display='none'" class="btn_big btn_gray">
+                        <!-- <input type="button" value="確認修改" class="btn_right"> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--跳框_說明圖片2-->
+    <div id="popup_FileInfo2" class="popup_windows" style="display: none;">
+        <div class="popup_container">
+            <div class="popup">
+                <div class="btn_close" onclick="document.getElementById('popup_FileInfo2').style.display='none'"></div>
+                <div class="popup_title">
+                    <span>說明圖片2</span>
+                </div>
+                <div class="popup_in">
+                    <div class="text_center"><img id="FileInfo2Img" name="FileInfo2Img" style="width: 500px;"></div><br>
+                    <!--按鈕-->
+                    <div class="popup_btn">
+                        <input type="button" value="關閉" onclick="document.getElementById('popup_FileInfo2').style.display='none'" class="btn_big btn_gray">
+                        <!-- <input type="button" value="確認修改" class="btn_right"> -->
                     </div>
                 </div>
             </div>

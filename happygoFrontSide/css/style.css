@@ -384,6 +384,9 @@ input.btn33 {
     padding: 3px 10px;
     font-size: 15px;
 }
+input.btn_purple {
+    background: #be46ff;
+}
 input.btn_yellow {
     background: #ffa200;
 }
